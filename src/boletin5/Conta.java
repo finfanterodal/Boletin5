@@ -9,8 +9,10 @@ public class Conta {
     //Atributos
     private String nome;
     private String numConta;
-    private double saldoActual;
     private double saldo;
+    private double saldoReintegro;
+    private double saldoIngreso;
+    private double saldoFinal;
 
     //Constructor
     public Conta() {
@@ -18,10 +20,12 @@ public class Conta {
     }
 
     public Conta(String nome, String numConta, double saldo) {
-        nome = "";
-        numConta = "";
-        saldo = 0;
+        this.nome = nome;
+        this.numConta = numConta;
+        this.saldo = saldo;
+        saldoFinal = saldo;
     }
+
     //Métodos
     //Setters
     public void setNome(String nome) {
@@ -34,6 +38,7 @@ public class Conta {
 
     public void setSaldo(double saldo) {
         this.saldo = saldo;
+        saldoFinal = saldo;
     }
     //Getters
 
@@ -46,13 +51,14 @@ public class Conta {
     }
 
     public double getSaldo() {
-        return saldo;
+        return saldoFinal;
     }
 
     //Método Ingreso
     public Boolean ingreso(float cantidade) {
         if (cantidade >= 0) {
-            saldo = getSaldo() + cantidade;
+            saldoIngreso = getSaldo() + cantidade;
+            saldoFinal = saldoIngreso;
             return true;
         } else {
             return false;
@@ -60,10 +66,9 @@ public class Conta {
     }
 
     public Boolean reintegro(float cantidade) {
-
-        saldo = getSaldo() - cantidade;
         if (cantidade >= 0) {
-            saldo = getSaldo() - cantidade;
+            saldoReintegro = getSaldo() - cantidade;
+            saldoFinal = saldoReintegro;
             return true;
         } else {
             return false;
@@ -75,11 +80,20 @@ public class Conta {
         System.out.println("\nNome: " + nome
                 + "\nNúmero de conta: " + numConta
                 + "\nSaldo inicial: " + saldo
-                + "\nSaldo coa cantidade ingresada: " + saldo
-                + "\nSaldo despois do reintegro: " + saldo);
+                + "\nSaldo coa cantidade ingresada: " + saldoIngreso
+                + "\nSaldo despois do reintegro: " + saldoReintegro
+                + "\nSaldo Final: " + saldoFinal);
     }
+
     //Transferencia
-    public void transferencia(String cuentaDestino,float cantidade){
-        
+    public void transferencia(Conta c, float cantidade) {
+        if (cantidade < saldoFinal) {
+            reintegro(cantidade);
+            c.ingreso(cantidade);
+            System.out.println("\nTotal saldo tras transferencia en su cuenta: " + saldoFinal);
+            System.out.println("\nTotal saldo tras transferencia en la cuenta de destino: " + c.getSaldo());
+        } else {
+            System.out.println("\nNon se pode realizar a operación.");
+        }
     }
 }
